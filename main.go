@@ -72,11 +72,12 @@ func updateMovie(w http.ResponseWriter, r *http.Request){
 	for index,item:=range movies{
 		if(item.ID==params["id"]){
 			movies=append(movies[:index],movies[index+1:]... )
-			var movie Movie
-			_=json.NewDecoder(r.Body).Decode(&movie)
-			movie.ID =params["id"]
-			movies=append(movies, movie)
-			json.NewEncoder(w).Encode(movie)
+			var newMovie Movie
+			_=json.NewDecoder(r.Body).Decode(&newMovie)
+			newMovie.ID =params["id"]
+			movies=append(movies, newMovie)
+			json.NewEncoder(w).Encode(movies)
+			break
 		}
 
 	}
@@ -106,7 +107,7 @@ func main(){
 	r.HandleFunc("/movies",getMovies).Methods("GET")
 	r.HandleFunc("/movies/{id}",getMovie).Methods("GET")
 	r.HandleFunc("/movies",createMovie).Methods("POST")
-	r.HandleFunc("/movies/{id}",updateMovie).Methods("UPDATE")
+	r.HandleFunc("/movies/{id}",updateMovie).Methods("PUT")
 	r.HandleFunc("/movies/{id}",deleteMovie).Methods("DELETE")
 	fmt.Printf("started server at port 8080")
 	if err:=http.ListenAndServe(":8080",r); err!=nil{
